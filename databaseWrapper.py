@@ -83,7 +83,8 @@ def returnCountOfDowns():
 #join a chatroom
 #REQUIRED INPUT : {$USERNAME : username, $TOPICNAME : topicName}
 @app.route('/join-chatroom', methods=['POST'])
-
+def joinChatroom():
+    pass
 
 #create a new user.
 #REQUIRED INPUT : {$AREAUSERNAME: username, $AREAEMAIL: email
@@ -123,17 +124,17 @@ def getDownsTopic():
 
     
 #setup the data to vote on a given messages
-def voteOnTopicSetup(request, typeOfVote: str):
+def createUserToTopicRelation(request, typeOfRelationship: str):
     # get the inputted username and topicname
     inputtedData = request.json
     topicName = inputtedData.get(AREATOPICNAME)
     userName = inputtedData.get(AREAUSERNAME)
 
     #format query
-    QUERY = "MATCH " + matchAUser(userName) + "," + matchATopic(topicName) + " CREATE " + "(user)" + typeOfVote + "(topic)"
+    QUERY = "MATCH " + matchAUser(userName) + "," + matchATopic(topicName) + " CREATE " + "(user)" + typeOfRelationship + "(topic)"
 
     #format error message
-    ERRORMESSAGE = "Creating " + typeOfVote + " for user and topic: " + userName + ", " + topicName + " failed."
+    ERRORMESSAGE = "Creating " + typeOfRelationship + " for user and topic: " + userName + ", " + topicName + " failed."
 
     #return data
     return QUERY, ERRORMESSAGE
@@ -143,7 +144,7 @@ def voteOnTopicSetup(request, typeOfVote: str):
 @app.route('/vote-topic/ups', methods=['POST'])
 def voteUpOnTopic():
     #setup and handle the query and error message
-    QUERY, errorMessage = voteOnTopicSetup(request, matchAUpsRelationship())
+    QUERY, errorMessage = createUserToTopicRelation(request, matchAUpsRelationship())
     return handleQuery(QUERY, {}, errorMessage)
 
 
@@ -152,7 +153,7 @@ def voteUpOnTopic():
 @app.route('/vote-topic/downs', methods=['POST'])
 def voteDownOnTopic():
     #setup and handle the query and error message
-    QUERY, errorMessage = voteOnTopicSetup(request, matchADownRelationship())
+    QUERY, errorMessage = createUserToTopicRelation(request, matchADownRelationship())
     return handleQuery(QUERY, {}, errorMessage)
 
 #skip a given topic and username
@@ -160,7 +161,7 @@ def voteDownOnTopic():
 @app.route('/vote-topic/skip', methods=['POST'])
 def voteSkipOnTopic():
     #setup and handle the query and error message
-    QUERY, errorMessage = voteOnTopicSetup(request, matchASkipRelationship())
+    QUERY, errorMessage = createUserToTopicRelation(request, matchASkipRelationship())
     return handleQuery(QUERY, {}, errorMessage)
 
 
@@ -170,6 +171,8 @@ def getAllData():
     QUERY = 'MATCH (n) RETURN n'
     return handleQuery(QUERY, {}, "get all data failed")
 
+
+#entry point
 if __name__ == "__main__":
     initDatabaseConnection() #connect to the database
     app.run(debug=True)
