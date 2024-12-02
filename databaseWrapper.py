@@ -176,5 +176,3 @@ def getAllData():
 if __name__ == "__main__":
     initDatabaseConnection() #connect to the database
     app.run(debug=True)
-
-
