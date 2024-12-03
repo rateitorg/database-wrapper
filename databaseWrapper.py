@@ -13,7 +13,7 @@ import os
 AREAUSERNAME = "name" #the area of the name property in the user node
 AREATOPICNAME = "describes" #the area of the describes property in the user node
 AREAEMAIL = "email" #the area of the email in the node
-
+AREACHATID = "chatroomID"
 
 #initilise flask
 app = Flask(__name__)
@@ -56,6 +56,10 @@ def initDatabaseConnection():
 def matchAUser(username: str):
     return "(user:USER {" + AREAUSERNAME + ": " + "\"" +  username  + "\"" + "})"
 
+#matchs a chatroom based on chatID
+def matchAChatroom(chatroomId: str):
+    return "(chatroom:CHATROOM {" + AREACHATID + ": " + "\"" + chatroomId + "\"" + "})"
+
 #matches a topic in the database
 def matchATopic(topicName: str):
     return "(topic:TOPIC {" + AREATOPICNAME + ": " +  "\"" + topicName + "\"" + "})"
@@ -72,19 +76,40 @@ def matchADownRelationship():
 def matchASkipRelationship():
     return "-[skip:SKIP]->"
 
+#return a relationship. Varname is the name of the new variable and labelName is the name of the label
+def matchRelationshipVar(varName: str, labelName: str) -> str:
+    return "-[" + varName + ":" + labelName + "]->"
+
+
 def returnCountOfUps():
-    return "RETURN COUNT(ups)"
+    return returnCountVar("ups")
 
 def returnCountOfDowns():
-    return "RETURN COUNT(downs)"
+    return returnCountVar("downs")
+
+#return the count of the var
+def returnCountVar(input: str) -> str:
+    return "RETURN COUNT(" + input + ")"
 
 #below is every way you can run a query currently
 
 #join a chatroom
 #REQUIRED INPUT : {$USERNAME : username, $TOPICNAME : topicName}
-@app.route('/join-chatroom', methods=['POST'])
+@app.route('/chatroom/join', methods=['POST'])
 def joinChatroom():
     pass
+
+#store a message on the database
+def linkMessageWithUserAndChatroom(chatroomId: str, username: str, messageContent: str, timeSent: str):
+    pass
+
+#links a user with a pre existing chatroom
+#inputs: chatroom id and user name
+def linkUserWithChatroom(chatroomId: str, username: str):
+    QUERY = "MATCH " + matchAUser(username) + "," + matchAChatroom(chatroomId) + " CREATE " + "(user)" + matchRelationshipVar("partOf", "PARTOF") + "(chatroom)"
+    ERRORMESSAGE = "failed to create link between user: " + username + " and chatroomID: " + chatroomId
+    return handleQuery(QUERY, {}, ERRORMESSAGE)
+
 
 #create a new user.
 #REQUIRED INPUT : {$AREAUSERNAME: username, $AREAEMAIL: email
@@ -121,8 +146,8 @@ def getUpsTopic():
 def getDownsTopic():
     QUERY, ERRORMESSAGE = setupGetVotes(request, matchADownRelationship(), returnCountOfDowns())
     return handleQuery(QUERY, {}, ERRORMESSAGE)
-
     
+
 #setup the data to vote on a given messages
 def createUserToTopicRelation(request, typeOfRelationship: str):
     # get the inputted username and topicname
