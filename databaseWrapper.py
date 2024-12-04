@@ -2,7 +2,7 @@ from neo4j import GraphDatabase
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 import logging
-
+import json
 import os
 
 #Sadly, we can only identify data based on inputted strings into the database.
@@ -53,8 +53,10 @@ def initDatabaseConnection():
 #below are functions to help with creating querys
 
 #matches a user in the database
-def matchAUser(username: str):
+def matchAUser(username: str, varname: str):
     return "(user:USER {" + AREAUSERNAME + ": " + "\"" +  username  + "\"" + "})"
+
+
 
 #matchs a chatroom based on chatID
 def matchAChatroom(chatroomId: str):
@@ -99,6 +101,20 @@ def returnCountVar(input: str) -> str:
 def joinChatroom():
     pass
 
+#friends one user and another
+#inputs: user1, user2
+@app.route('/friend-user', methods=['POST'])
+def friendUser():
+    inputtedData = request.json
+    userName1 = inputtedData.get(AREAUSERNAME + "1")
+    userName2 = inputtedData.get(AREAUSERNAME + "2")
+
+    #make query
+    QUERY = "MATCH " + matchAUser(userName1, "user1") + ", " + matchAUser(userName2, "user2") + " CREATE (user1)" + matchRelationshipVar("", "FRIEND") + "(user2)"
+    ERRORMESSAGE = "ERROR: Failed to make friend relationship between " + userName1 + " and " + userName2
+
+    
+
 #store a message on the database
 def linkMessageWithUserAndChatroom(chatroomId: str, username: str, messageContent: str, timeSent: str):
     pass
@@ -106,7 +122,7 @@ def linkMessageWithUserAndChatroom(chatroomId: str, username: str, messageConten
 #links a user with a pre existing chatroom
 #inputs: chatroom id and user name
 def linkUserWithChatroom(chatroomId: str, username: str):
-    QUERY = "MATCH " + matchAUser(username) + "," + matchAChatroom(chatroomId) + " CREATE " + "(user)" + matchRelationshipVar("partOf", "PARTOF") + "(chatroom)"
+    QUERY = "MATCH " + matchAUser(username, "user") + "," + matchAChatroom(chatroomId) + " CREATE " + "(user)" + matchRelationshipVar("partOf", "PARTOF") + "(chatroom)"
     ERRORMESSAGE = "failed to create link between user: " + username + " and chatroomID: " + chatroomId
     return handleQuery(QUERY, {}, ERRORMESSAGE)
 
@@ -146,6 +162,20 @@ def getUpsTopic():
 def getDownsTopic():
     QUERY, ERRORMESSAGE = setupGetVotes(request, matchADownRelationship(), returnCountOfDowns())
     return handleQuery(QUERY, {}, ERRORMESSAGE)
+
+#similarty should be a number between 0 and one 
+def createTopicTopicRelatoin(topic1: str, topic2: str, similarity: str):
+    num = int(similarity)
+    #checks if the inputted similarity is valid
+    if num > 1 or num < 0:
+        print("ERROR: similarity needs to be between 0 and 1")
+        return json.dump({"ERROR": "similarity needs to be between 0 or 1"})
+    
+    #makes query
+    QUERY = "MATCH (topic1:TOPIC {describes: topic1}), (topic2:TOPIC {describes: topic2}) CREATE " + "(topic1)-[:SIMILARITY {magnitude: similarity}]->(topic2)"
+    ERRORMESSAGE = "ERROR: failed to make topic to topic relation between: " + topic1 + ", " + topic2 + " with similarity " + str(similarity)
+    #run the query
+
     
 
 #setup the data to vote on a given messages
@@ -156,7 +186,7 @@ def createUserToTopicRelation(request, typeOfRelationship: str):
     userName = inputtedData.get(AREAUSERNAME)
 
     #format query
-    QUERY = "MATCH " + matchAUser(userName) + "," + matchATopic(topicName) + " CREATE " + "(user)" + typeOfRelationship + "(topic)"
+    QUERY = "MATCH " + matchAUser(userName, "user") + "," + matchATopic(topicName) + " CREATE " + "(user)" + typeOfRelationship + "(topic)"
 
     #format error message
     ERRORMESSAGE = "Creating " + typeOfRelationship + " for user and topic: " + userName + ", " + topicName + " failed."
