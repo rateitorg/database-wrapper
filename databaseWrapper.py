@@ -13,7 +13,7 @@ import os
 AREAUSERNAME = "name" #the area of the name property in the user node
 AREATOPICNAME = "describes" #the area of the describes property in the user node
 AREAEMAIL = "email" #the area of the email in the node
-AREACHATID = "chatroomID"
+AREACHATID = "chatroomID" # the area where the chatroom id is 
 
 #initilise flask
 app = Flask(__name__)
@@ -174,7 +174,7 @@ def createTopicTopicRelatoin(topic1: str, topic2: str, similarity: str):
     #makes query
     QUERY = "MATCH (topic1:TOPIC {describes: topic1}), (topic2:TOPIC {describes: topic2}) CREATE " + "(topic1)-[:SIMILARITY {magnitude: similarity}]->(topic2)"
     ERRORMESSAGE = "ERROR: failed to make topic to topic relation between: " + topic1 + ", " + topic2 + " with similarity " + str(similarity)
-    #run the query
+    #run query
 
     
 
