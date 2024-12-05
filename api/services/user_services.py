@@ -63,7 +63,7 @@ def get_ups_topic(request):
     #get topic
     topic = findData(AREATOPICNAME, inputtedData)
 
-    run_get_votes(topic, "-[ups:UPS]->", "COUNT(ups)")
+    return run_get_votes(topic, "-[ups:UPS]->", "COUNT(ups)")
 
 #helper to avoid repeating code on voting up and down
 def getUserVotingInformation(request):
