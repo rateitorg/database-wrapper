@@ -7,7 +7,6 @@ from flask import Blueprint, request
 dev_bp = Blueprint('dev', __name__) #the bp containing all the user api functions
 
 
-
 #TODO: way to safely access these routes
 
 #adds a topic and creates a relation to each topic similar to it
@@ -22,7 +21,6 @@ def addTopic():
 @dev_bp.route("/change-daily-topic", methods=["POST"])
 def changeTodaysTopic():
     changeTodaysTopic(request)
-
 
 
 if __name__ == "__main__":
