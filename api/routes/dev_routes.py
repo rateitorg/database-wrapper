@@ -20,7 +20,7 @@ def addTopic():
 #name: name of topic
 @dev_bp.route("/change-daily-topic", methods=["POST"])
 def changeTodaysTopic():
-    changeTodaysTopic(request)
+    dev_s.changeTodaysTopic(request)
 
 
 if __name__ == "__main__":
