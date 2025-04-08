@@ -8,7 +8,7 @@ def add_topic(name: str, description: str, relatedTo: list[str]):
     
     #add a relationship for each topic relatedTo
     for topic in relatedTo:
-        QUERY += "CREATE (" + topic + ")-[:RELATED_TO]->(" + name + ")"
+        QUERY += "CREATE (" + topic + ")-[:RELATED_TO]->(" + name + ") "
     
     ERRORMESSAGE = "ERROR: Failed to add topic to database"
     return handleQuery(QUERY, {}, ERRORMESSAGE)
