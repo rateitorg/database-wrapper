@@ -128,3 +128,13 @@ def get_topic_data(request):
 
     response = run_get_all_topic_data(topic)
     return addStatusCode(response)
+
+
+#get all related topics for a given topic
+def get_related_topics(request):
+    inputtedData = request.json
+
+    topicName = findData(AREATOPICNAME, inputtedData)
+
+    response = run_get_related_topics(topicName)
+    return addStatusCode(response)

@@ -44,6 +44,12 @@ def makeQueryChatroomUserRel(userVar: str, chatroomvar: str, messageContent: str
     return "(" + userVar + ")-[:MESSAGE {" + AREAMESSAGECONTENT + ": " + "\"" + messageContent + "\", " + AREADATETIMESENT + ": datetime(" "\"" + datetime + "\")}]->(" + chatroomvar + ")"
 
 
+#form a query to get all topic info and the amount of ups and downs for that topic
+def allTopicInfoQuery(topicName: str):
+    QUERY = "MATCH (topic:TOPIC {" + AREATOPICNAME + ": " + "\"" + topicName + "\"" + "}) "
+    QUERY += "MATCH (topic)<-[ups:UPS]-(user:USER) MATCH (topic)<-[downs:DOWNS]-(user:USER) RETURN topic, COUNT(ups), COUNT(downs)"
+    return QUERY
+
 #----------------------------------------------------------------------------------------------------------------------------------
 #below is every way you can run a query currently
 
@@ -95,7 +101,17 @@ def run_linkMessageWithUserAndChatroom(chatroomId: str, username: str, messageCo
 #get all topic data based on a name
 #TODO: test
 def run_get_all_topic_data(topicName: str):
-    QUERY = "MATCH (topic:TOPIC {" + AREATOPICNAME + ": " + "\"" + topicName + "\"" + "}) "
-    QUERY += "MATCH (topic)<-[ups:UPS]-(user:USER) MATCH (topic)<-[downs:DOWNS]-(user:USER) RETURN topic, COUNT(ups), COUNT(downs)"
+    QUERY = allTopicInfoQuery(topicName)
     ERRORMESSAGE = "failed to get all topic data for topic " + topicName
     return handleQuery(QUERY, {}, ERRORMESSAGE)
+
+
+#get all topics reltated to a given topic
+#TODO: test
+def run_get_related_topics(topicName: str):
+    QUERY = "MATCH (topic:TOPIC {" + AREATOPICNAME + ": " + "\"" + topicName + "\"" + "}) MATCH (topic)<-[:RELATED_TO]-(relatedTopic:TOPIC) RETURN relatedTopic"
+    ERRORMESSAGE = "failed to get related topics for topic " + topicName
+    return handleQuery(QUERY, {}, ERRORMESSAGE)
+    pass
+
+

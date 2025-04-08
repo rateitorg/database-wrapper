@@ -81,3 +81,9 @@ def todays_topic():
     return s.get_topic_data({c.AREATOPICNAME: topicName})
 
 
+#get all related topic for a given topic
+@user_bp.route('/get-related-topics', methods=['POST'])
+def get_related_topics():
+    return s.get_related_topics()
+
+
