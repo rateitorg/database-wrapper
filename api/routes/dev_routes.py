@@ -6,7 +6,7 @@ from flask import Blueprint, request
 
 dev_bp = Blueprint('dev', __name__) #the bp containing all the user api functions
 
-
+#f
 #TODO: way to safely access these routes
 
 #adds a topic and creates a relation to each topic similar to it
