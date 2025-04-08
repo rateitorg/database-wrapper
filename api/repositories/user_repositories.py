@@ -90,3 +90,11 @@ def run_linkMessageWithUserAndChatroom(chatroomId: str, username: str, messageCo
     QUERY = "MATCH " + matchAUser(username, "user") + ", " + matchAChatroom(chatroomId, "chatroom") + " CREATE " + makeQueryChatroomUserRel("chatroom","user", messageContent, timeSent)
     ERRORMESSAGE = "Error, failed to link a message with a user : " + username + " and chatroomID " + chatroomId + " timesent: " + timeSent + " messageContent " + messageContent
     return handleQuery(QUERY, {}, ERRORMESSAGE)
+
+
+#get all topic data
+#TODO: test
+def run_get_all_topic_data():
+    QUERY = "MATCH (topic:TOPIC) RETURN topic"
+    ERRORMESSAGE = "failed to get all topic data"
+    return handleQuery(QUERY, {}, ERRORMESSAGE)

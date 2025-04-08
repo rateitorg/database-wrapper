@@ -1,8 +1,10 @@
 #contains the routes for user manipulation.
 #anything which can be called while using the app is here
 
-from flask import Blueprint, request
+from flask import Blueprint, request, current_app
 import api.services.user_services as s #functions in services
+import api.utils.dailyData as d
+import api.utils.Constants as c
 
 user_bp = Blueprint('users', __name__) #the bp containing all the user api functions
 
@@ -70,3 +72,12 @@ def voteSkipOnTopic():
 @user_bp.route('/new-user', methods=['POST'])
 def newUser():
     return s.make_new_user(request)
+
+
+#gets whatever is saved as todays topic
+@user_bp.route('/todays-topic', methods=['POST'])
+def todays_topic():
+    topicName = d.getTodaysTopic().get(c.AREATOPICNAME)
+    return s.get_topic_data({c.AREATOPICNAME: topicName})
+
+
