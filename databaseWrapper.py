@@ -15,6 +15,10 @@ AREATOPICNAME = "describes" #the area of the describes property in the user node
 AREAEMAIL = "email" #the area of the email in the node
 AREACHATID = "chatroomID" # the area where the chatroom id is 
 
+#areas for messagerelationships
+AREAMESSAGECONTENT = "content"
+AREADATETIMESENT = "datetime"
+
 #initilise flask
 app = Flask(__name__)
 
@@ -42,7 +46,7 @@ def initDatabaseConnection():
     load_dotenv() # so we can get the data to connnect to the db
 
     # user data to connect
-    URI = os.getenv("NEO4J_URI")
+    URI = os.getenv("NEO4J_LOCALHOSTURI")
     USERNAME = os.getenv("NEO4J_USERNAME")
     PASSWORD = os.getenv("NEO4J_PASSWORD")
 
@@ -56,11 +60,9 @@ def initDatabaseConnection():
 def matchAUser(username: str, varname: str):
     return "(user:USER {" + AREAUSERNAME + ": " + "\"" +  username  + "\"" + "})"
 
-
-
 #matchs a chatroom based on chatID
-def matchAChatroom(chatroomId: str):
-    return "(chatroom:CHATROOM {" + AREACHATID + ": " + "\"" + chatroomId + "\"" + "})"
+def matchAChatroom(chatroomId: str, chatroomVar: str):
+    return "(" + chatroomVar + ":CHATROOM {" + AREACHATID + ": " + "\"" + chatroomId + "\"" + "})"
 
 #matches a topic in the database
 def matchATopic(topicName: str):
@@ -93,7 +95,43 @@ def returnCountOfDowns():
 def returnCountVar(input: str) -> str:
     return "RETURN COUNT(" + input + ")"
 
+
+#creates a new chatroom
+def createNewChatroomOnDatabase(topicName : str):
+    pass
+
+
+#return a link between a chatroom and a user, including message content and date time sent
+def makeQueryChatroomUserRel(userVar: str, chatroomvar: str, messageContent: str, datetime: str):
+    #(user)-[:MESSAGE {AreaOfMessageContent: messageContent, AreaOfDateTime, datetime}]->(chatroom)
+    #messyness of below code comes from syntax requirements
+    return "(" + userVar + ")-[:MESSAGE {" + AREAMESSAGECONTENT + ": " + "\"" + messageContent + "\", " + AREADATETIMESENT + ": datetime(" "\"" + datetime + "\")}]->(" + chatroomvar + ")"
+
 #below is every way you can run a query currently
+
+#store a message on the database
+#TODO : TEST THIS FUNCTION
+def linkMessageWithUserAndChatroom(chatroomId: str, username: str, messageContent: str, timeSent: str):
+    #query needs to: match chatroom, match user, create a relationship which stores message content and time sent
+    QUERY = "MATCH " + matchAUser(username, "user") + ", " + matchAChatroom(chatroomId, "chatroom") + " CREATE " + makeQueryChatroomUserRel("chatroom","user", messageContent, timeSent)
+    ERRORMESSAGE = "Error, failed to link a message with a user : " + username + " and chatroomID " + chatroomId + " timesent: " + timeSent + " messageContent " + messageContent
+    return handleQuery(QUERY, {}, ERRORMESSAGE)
+
+
+#sends a message to a chatroom
+#INPUTS : JSON {user: <username>, chatroomId: <chatroomID>, datetime: <datetime>, messagecontent: <messagecontent>}
+#TODO : test
+@app.route('/chatroom/sendmessage', methods=['POST'])
+def chatroomSendMessage():
+    inputtedData = request.json
+
+    #extract message data
+    senderUsername = request.get(AREAUSERNAME)
+    chatroomID = request.get(AREACHATID)
+    datetime = request.get(AREADATETIMESENT)
+    messagecontent = request.get(AREAMESSAGECONTENT)
+    
+    return linkMessageWithUserAndChatroom(chatroomID, senderUsername, messagecontent, datetime)
 
 #join a chatroom
 #REQUIRED INPUT : {$USERNAME : username, $TOPICNAME : topicName}
@@ -101,8 +139,10 @@ def returnCountVar(input: str) -> str:
 def joinChatroom():
     pass
 
-#friends one user and another
+
+#friends one user and another.
 #inputs: user1, user2
+#TODO : TEST THIS FUNCTION
 @app.route('/friend-user', methods=['POST'])
 def friendUser():
     inputtedData = request.json
@@ -112,17 +152,13 @@ def friendUser():
     #make query
     QUERY = "MATCH " + matchAUser(userName1, "user1") + ", " + matchAUser(userName2, "user2") + " CREATE (user1)" + matchRelationshipVar("", "FRIEND") + "(user2)"
     ERRORMESSAGE = "ERROR: Failed to make friend relationship between " + userName1 + " and " + userName2
-
-    
-
-#store a message on the database
-def linkMessageWithUserAndChatroom(chatroomId: str, username: str, messageContent: str, timeSent: str):
-    pass
+ 
 
 #links a user with a pre existing chatroom
 #inputs: chatroom id and user name
+#TODO: TEST THIS FUNCTION
 def linkUserWithChatroom(chatroomId: str, username: str):
-    QUERY = "MATCH " + matchAUser(username, "user") + "," + matchAChatroom(chatroomId) + " CREATE " + "(user)" + matchRelationshipVar("partOf", "PARTOF") + "(chatroom)"
+    QUERY = "MATCH " + matchAUser(username, "user") + "," + matchAChatroom(chatroomId, "chatroom") + " CREATE " + "(user)" + matchRelationshipVar("partOf", "PARTOF") + "(chatroom)"
     ERRORMESSAGE = "failed to create link between user: " + username + " and chatroomID: " + chatroomId
     return handleQuery(QUERY, {}, ERRORMESSAGE)
 
