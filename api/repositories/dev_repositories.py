@@ -4,7 +4,7 @@ from utils.Constants import AREATOPICNAME, AREATOPICDESCRIPTION
 
 def add_topic(name: str, description: str, image: str, relatedTo: list[str]):
     # add a topic to the database
-    QUERY = "CREATE (" + name + ":TOPIC {" + AREATOPICNAME + ": " + "\"" + name + "\"" + ", " + AREATOPICDESCRIPTION + ": " + "\"" + description + "\"" + "," + AREATOPICIMAGE + ": " + "\"" + image + "\"" + "});"
+    QUERY = "CREATE (" + name + ":TOPIC {" + AREATOPICNAME + ": " + "\"" + name + "\"" + ", " + AREATOPICIMAGE + ": " + "\"" + image + "\"" + "});"
     
     #add a relationship for each topic relatedTo
     for topic in relatedTo:

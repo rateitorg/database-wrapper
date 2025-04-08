@@ -1,23 +1,28 @@
 #holds dev stuff for dealing with the database.
-import api.services.user_services as s #functions in services
 import api.utils.dailyData as d
-import api.utils.Constants as c
 import api.services.user_services as user_s
 import api.services.dev_services as dev_s
+from flask import Blueprint, request
 
-#TODO: way to safely access this code
+dev_bp = Blueprint('dev', __name__) #the bp containing all the user api functions
+
+
+
+#TODO: way to safely access these routes
 
 #adds a topic and creates a relation to each topic similar to it
 #name; name of topic, description: description of topic, relatedTo: list of topic names similar to it. 
 #Image is a string of the image url.
-def addTopic(name: str, description: str, image: str, relatedTo: list[str]):
-    dev_s.addTopic(name, description, relatedTo)
+@dev_bp.route("/add-topic", methods=["POST"])
+def addTopic():
+    dev_s.addTopic(request)
 
+#changes the topic of the day to a new one
+#name: name of topic
+@dev_bp.route("/change-daily-topic", methods=["POST"])
+def changeTodaysTopic():
+    changeTodaysTopic(request)
 
-def changeTodaysTopic(name: str):
-    #get the topic data from the database
-    data = user_s.get_topic_data(name)
-    d.changeTodaysTopic(data)
 
 
 if __name__ == "__main__":
