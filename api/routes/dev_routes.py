@@ -9,7 +9,8 @@ import api.services.dev_services as dev_s
 
 #adds a topic and creates a relation to each topic similar to it
 #name; name of topic, description: description of topic, relatedTo: list of topic names similar to it. 
-def addTopic(name: str, description: str, relatedTo: list[str]):
+#Image is a string of the image url.
+def addTopic(name: str, description: str, image: str, relatedTo: list[str]):
     dev_s.addTopic(name, description, relatedTo)
 
 
@@ -20,5 +21,5 @@ def changeTodaysTopic(name: str):
 
 
 if __name__ == "__main__":
-    #run your desired dev functions here.
+    #shiii
     pass
