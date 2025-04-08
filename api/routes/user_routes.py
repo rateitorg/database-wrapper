@@ -2,9 +2,11 @@
 #anything which can be called while using the app is here
 
 from flask import Blueprint, request, current_app
-import api.services.user_services as s #functions in services
-import api.utils.dailyData as d
-import api.utils.Constants as c
+import utils.Constants as c
+import utils.dailyData as d
+import services.user_services as s
+
+
 
 user_bp = Blueprint('users', __name__) #the bp containing all the user api functions
 

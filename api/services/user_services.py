@@ -11,6 +11,8 @@ def findData(key: str, request: dict):
     if data == None:
         return request #should be an error structure if failed to find data.
     
+    return data
+    
 
 def addStatusCode(response):
     #add a status code to the response
@@ -21,7 +23,7 @@ def addStatusCode(response):
 
 
 def get_all_data(request):
-    run_get_all_data()
+    return run_get_all_data()
 
 #get data for chatroomSendMessage
 def chatroom_send_message(request):

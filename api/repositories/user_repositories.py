@@ -57,7 +57,7 @@ def allTopicInfoQuery(topicName: str):
 def run_friend_user(userName1: str, userName2: str):
     QUERY = "MATCH " + matchAUser(userName1, "user1") + ", " + matchAUser(userName2, "user2") + " CREATE (user1)" + matchRelationshipVar("", "FRIEND") + "(user2)"
     ERRORMESSAGE = "ERROR: Failed to make friend relationship between " + userName1 + " and " + userName2
-    return handleQuery(QUERY, {}, ERRORMESSAGE)
+    return handleQuery(QUERY, {}, ERRORMESSAGE, True)
 
 #links a user with a chatroom
 def run_linkUserWithChatroom(chatroomId: str, username: str):
@@ -69,7 +69,7 @@ def run_linkUserWithChatroom(chatroomId: str, username: str):
 def run_new_user(userName: str, email: str):
     QUERY = "CREATE (" + userName + ":USER {" + AREAUSERNAME + ": " + "'" + userName + "'" +  ", " + AREAEMAIL + ": " + "'" + email + "'" + "})"
     ERRORMESSAGE = "Creating new user: " + userName + ", " + email + " failed."
-    return handleQuery(QUERY, {}, ERRORMESSAGE)
+    return handleQuery(QUERY, {}, ERRORMESSAGE, True)
 
 #gets the amount of votes a given topic has
 def run_get_votes(topicName: str, typeOfRelationship: str, typeOfCount: str):
@@ -81,7 +81,7 @@ def run_get_votes(topicName: str, typeOfRelationship: str, typeOfCount: str):
 def run_create_user_to_topic_relation(typeOfRelationship: str, userName: str, topicName: str):
     QUERY = "MATCH " + matchAUser(userName, "user") + "," + matchATopic(topicName) + " CREATE " + "(user)" + typeOfRelationship
     ERRORMESSAGE = "Creating " + typeOfRelationship + " for user and topic: " + userName + ", " + topicName + " failed."
-    return handleQuery(QUERY, {}, ERRORMESSAGE)
+    return handleQuery(QUERY, {}, ERRORMESSAGE, True)
 
 #gets all data in the database
 def run_get_all_data():

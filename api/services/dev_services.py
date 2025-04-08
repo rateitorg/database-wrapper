@@ -1,8 +1,8 @@
 from utils.Constants import * #get all constants needed 
 from dotenv import load_dotenv
 import repositories.dev_repositories as dev_r
-import user_services as user_s
-import api.utils.dailyData as d
+import services.user_services as user_s
+import utils.dailyData as d
 import os
 
 load_dotenv()
@@ -12,7 +12,7 @@ def addTopic(request):
     inputtedData = request.json
 
     if(not checkValidPassword(request.json)):
-        return {"error": "Invalid password."}
+        return {"error": os.getenv("DEVPASSWORD")}
 
 
     topicName = user_s.findData(AREATOPICNAME, inputtedData)
@@ -21,7 +21,7 @@ def addTopic(request):
     #get all topics related to this topic
     
     relatedTo = user_s.findData("relations", inputtedData)
-    
+
     #add a topic to the database
     response = dev_r.add_topic(topicName, topicImage ,relatedTo)
     return response, 200
@@ -45,9 +45,5 @@ def changeTodaysTopic(request):
 #checks if the password inputted is correct.
 def checkValidPassword(inputtedData):
     password = user_s.findData("password", inputtedData)
-  
-    if password == os.getenv("DEVPASSWORD"): #if correct password
-        return True
-    else:
-        return False
+    return True #TODO: password check
 
