@@ -2,8 +2,9 @@
 import pytest
 from flask import Flask
 from flask.testing import FlaskClient
-from api.routes import api_bp
 from api.utils import Constants
+
+#TODO: setup initilisng the flask app locally.
 
 #initilise the flask app
 def create_app():
