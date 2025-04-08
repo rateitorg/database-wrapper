@@ -119,12 +119,12 @@ def make_new_user(request):
     return addStatusCode(response)
 
 
-#gets all data for a topic.
+#gets all data for a topic. Includes ups and downs counts.
 def get_topic_data(request):
     inputtedData = request.json
 
     #get topic
     topic = findData(AREATOPICNAME, inputtedData)
 
-    response =  run_get_all_topic_data(topic)
+    response = run_get_all_topic_data(topic)
     return addStatusCode(response)

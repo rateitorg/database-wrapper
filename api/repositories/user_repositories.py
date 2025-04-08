@@ -92,9 +92,10 @@ def run_linkMessageWithUserAndChatroom(chatroomId: str, username: str, messageCo
     return handleQuery(QUERY, {}, ERRORMESSAGE)
 
 
-#get all topic data
+#get all topic data based on a name
 #TODO: test
-def run_get_all_topic_data():
-    QUERY = "MATCH (topic:TOPIC) RETURN topic"
-    ERRORMESSAGE = "failed to get all topic data"
+def run_get_all_topic_data(topicName: str):
+    QUERY = "MATCH (topic:TOPIC {" + AREATOPICNAME + ": " + "\"" + topicName + "\"" + "}) "
+    QUERY += "MATCH (topic)<-[ups:UPS]-(user:USER) MATCH (topic)<-[downs:DOWNS]-(user:USER) RETURN topic, COUNT(ups), COUNT(downs)"
+    ERRORMESSAGE = "failed to get all topic data for topic " + topicName
     return handleQuery(QUERY, {}, ERRORMESSAGE)
