@@ -1,0 +1,32 @@
+services:
+  api-build:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    networks:
+      - api-network
+    tty: true
+    stdin_open: true
+    depends_on:
+      - db
+
+
+  db:
+    image: neo4j:5.25.1
+    ports:
+      - "7474:7474"
+      - "7473:7473"
+      - "7687:7687"
+    env_file: 
+      - ".env"
+    networks:
+      - api-network
+    tty: true
+    stdin_open: true
+
+
+networks:
+  api-network:
+    driver: bridge
