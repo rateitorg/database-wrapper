@@ -86,6 +86,6 @@ def todays_topic():
 #get all related topic for a given topic
 @user_bp.route('/get-related-topics', methods=['POST'])
 def get_related_topics():
-    return s.get_related_topics()
+    return s.get_related_topics(request)
 
 

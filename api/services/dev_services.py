@@ -24,7 +24,7 @@ def addTopic(request):
 
     #add a topic to the database
     response = dev_r.add_topic(topicName, topicImage ,relatedTo)
-    return response, 200
+    return response
     
 
 #changes the topic of the day to a new one
@@ -39,7 +39,7 @@ def changeTodaysTopic(request):
     #set the new topic of the day
     d.changeTodaysTopic(topicName)
 
-    return {"success": "Topic of the day changed."}, 200
+    return {"success": "Topic of the day changed."}
 
 
 #checks if the password inputted is correct.

@@ -42,8 +42,8 @@ def runQuery(query, parameters, is_write=False):
 def handleQuery(QUERY, PARAMETERS, ERRORMESSAGE, is_write=False):
     try:
         result = runQuery(QUERY, PARAMETERS) #run a query and its parameters
-        return  jsonify([record.data() for record in result]) #return the json form of the data
+        return  jsonify([record.data() for record in result]), 200 #return the json form of the data
     except Exception as e:
         return jsonify({"errormessage":ERRORMESSAGE, 
                         "query": QUERY, 
-                        "fullerroroutput": str(e)}) #return an error message if it fails
+                        "fullerroroutput": str(e)}), 500 #return an error message if it fails

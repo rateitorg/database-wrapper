@@ -14,14 +14,6 @@ def findData(key: str, request: dict):
     return data
     
 
-def addStatusCode(response):
-    #add a status code to the response
-    if "errormessage" in response:
-        return response, 500
-    else:
-        return response, 200
-
-
 def get_all_data(request):
     return run_get_all_data()
 
@@ -36,8 +28,8 @@ def chatroom_send_message(request):
     messagecontent = findData(AREAMESSAGECONTENT, inputtedData)
 
     #run query
-    response = run_linkMessageWithUserAndChatroom(chatroomID, senderUsername, messagecontent, datetime)
-    return addStatusCode(response)
+    return run_linkMessageWithUserAndChatroom(chatroomID, senderUsername, messagecontent, datetime)
+    
     
 
 #join a chatroom for a topic
@@ -59,8 +51,8 @@ def friend_user(request):
     sourceUser = findData(AREAUSERNAME + "1" , inputtedData)
     destUser = findData(AREAUSERNAME + "2", inputtedData)
 
-    response = run_friend_user(sourceUser, destUser)
-    return addStatusCode(response)
+    return run_friend_user(sourceUser, destUser)
+   
 
 #get amount of downs on a topic
 def get_downs_topic(request):
@@ -69,8 +61,8 @@ def get_downs_topic(request):
     #get topic
     topic = findData(AREATOPICNAME, inputtedData)
 
-    response =  run_get_votes(topic, "-[downs:DOWNS]->", "COUNT(downs)")
-    return addStatusCode(response)
+    return run_get_votes(topic, "-[downs:DOWNS]->", "COUNT(downs)")
+
 
 
 #get amount of likes on a topic
@@ -80,8 +72,7 @@ def get_ups_topic(request):
     #get topic
     topic = findData(AREATOPICNAME, inputtedData)
 
-    response =  run_get_votes(topic, "-[ups:UPS]->", "COUNT(ups)")
-    return addStatusCode(response)
+    return run_get_votes(topic, "-[ups:UPS]->", "COUNT(ups)")
 
 #helper to avoid repeating code on voting up and down
 def getUserVotingInformation(request):
@@ -96,29 +87,27 @@ def getUserVotingInformation(request):
 #when a user votes up on a topic
 def vote_ups_topic(request):
     topic, user = getUserVotingInformation(request)
-    response =  run_create_user_to_topic_relation("-[ups:UPS]->", user, topic)
-    return addStatusCode(response)
+    return run_create_user_to_topic_relation("-[ups:UPS]->", user, topic)
+    
 
 #when a user votes down on a topic
 def vote_downs_topic(request):
     topic, user = getUserVotingInformation(request)
-    response =  run_create_user_to_topic_relation("-[downs:DOWNS]->", user, topic)
-    return addStatusCode(response)
+    return run_create_user_to_topic_relation("-[downs:DOWNS]->", user, topic)
+    
 
 #for when a user scrolls past a topic without liking it
 def vote_skip_topic(request):
     topic, user = getUserVotingInformation(request)
-    response =  run_create_user_to_topic_relation("-[skips:SKIP]->", user, topic)
-    return addStatusCode(response)
-
+    return run_create_user_to_topic_relation("-[skips:SKIP]->", user, topic)
+    
 #makes a new user node
 def make_new_user(request):
     inputtedData = request.json
 
     newUsername = findData(AREAUSERNAME, inputtedData)
     newEmail = findData(AREAEMAIL, inputtedData)
-    response =  run_new_user(newUsername, newEmail)
-    return addStatusCode(response)
+    return run_new_user(newUsername, newEmail)
 
 
 #gets all data for a topic. Includes ups and downs counts.
@@ -128,9 +117,7 @@ def get_topic_data(request):
     #get topic
     topic = findData(AREATOPICNAME, inputtedData)
 
-    response = run_get_all_topic_data(topic)
-    return addStatusCode(response)
-
+    return run_get_all_topic_data(topic)
 
 #get all related topics for a given topic
 def get_related_topics(request):
@@ -138,5 +125,5 @@ def get_related_topics(request):
 
     topicName = findData(AREATOPICNAME, inputtedData)
 
-    response = run_get_related_topics(topicName)
-    return addStatusCode(response)
+    return run_get_related_topics(topicName)
+    

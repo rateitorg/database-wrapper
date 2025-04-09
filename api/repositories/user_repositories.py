@@ -109,9 +109,9 @@ def run_get_all_topic_data(topicName: str):
 #get all topics reltated to a given topic
 #TODO: test
 def run_get_related_topics(topicName: str):
-    QUERY = "MATCH (topic:TOPIC {" + AREATOPICNAME + ": " + "\"" + topicName + "\"" + "}) MATCH (topic)<-[:RELATED_TO]-(relatedTopic:TOPIC) RETURN relatedTopic"
+    QUERY = "MATCH (topic:TOPIC)-[:RELATED_TO]->(relatedTopic:TOPIC) WHERE topic." + AREATOPICNAME + " = '" + topicName + "' RETURN relatedTopic"
     ERRORMESSAGE = "failed to get related topics for topic " + topicName
+
     return handleQuery(QUERY, {}, ERRORMESSAGE)
-    pass
 
 
