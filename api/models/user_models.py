@@ -35,7 +35,7 @@ def runQuery(query, parameters, is_write=False):
         result = session.run(query, parameters)
         if is_write:
             result.consume()
-            return []
+            return jsonify({"success": "write operation successful"})
         return list(result)
 
 #handle a query. Attempts to run and errors if not possible
