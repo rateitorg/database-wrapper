@@ -13,6 +13,10 @@ def create_app():
     app.register_blueprint(user_bp, url_prefix="/users")
     app.register_blueprint(dev_bp, url_prefix="/dev")
 
+    @app.route('/test', methods=['GET'])
+    def test():
+        return {"status": "ok"}
+
     with app.app_context():
         initDatabaseConnection(app)
         initiliseDailyData(app)
@@ -24,6 +28,8 @@ def initiliseDailyData(app):
     app.config['TODAYSTOPIC'] = {} #default initially
     app.config['ALLDAILYTOPICS'] = [{}] #all previous topics.
     
+# Create app at module level
+app = create_app()
+
 if __name__ == "__main__":
-    app = create_app()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

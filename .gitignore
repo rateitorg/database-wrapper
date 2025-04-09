@@ -1,5 +1,7 @@
 # Environments
 .env
+.env.api
+.env.neo4j
 .venv
 env/
 venv/
